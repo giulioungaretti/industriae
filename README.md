@@ -14,7 +14,18 @@ Based on this principles, a few choices were made:
 
 *   The prototype will be scarce in features, but of high quality and clear purpose.
 
+## Getting started
+This monorepo contains the following projects:
+- API - a go project/module that contains both the REST api and a simulated embedded system taht mimics the rtos.
+- GUI - a react/typescript app that provides a simple UI to control the system and display the data.
+
+It is **required** to install docker to run both compoments, and the vscode extension [dev container](https://code.visualstudio.com/docs/devcontainers/create-dev-container) !
+
+Inside the two folders there are instructions on how to run the projects.  
+It is **required** to run the API first, and then the GUI!
+
 ## Architecture
+
 
 ### The system
 
