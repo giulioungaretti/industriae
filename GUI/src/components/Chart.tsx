@@ -1,30 +1,30 @@
-import Chart, { ChartOptions } from "chart.js/auto"
-import "chartjs-adapter-moment"
-import React, { useEffect, useRef, useState } from "react"
+import Chart, { ChartOptions } from "chart.js/auto";
+import "chartjs-adapter-moment";
+import React, { useEffect, useRef, useState } from "react";
 
 interface IDataPoint {
-  Time: number
-  Value: number
+  Time: number;
+  Value: number;
 }
 
 interface IData {
-  Sensor: string
-  SetPoint: number
-  SetPointTs: number
-  Value: number
-  Ts: number
-  Error: null
-  TsSent: number
+  Sensor: string;
+  SetPoint: number;
+  SetPointTs: number;
+  Value: number;
+  Ts: number;
+  Error: null;
+  TsSent: number;
 }
 
 interface ChartJsCanvasProps {
-  name: string
-  datapoint: IDataPoint | undefined
+  name: string;
+  datapoint: IDataPoint | undefined;
 }
 
 const ChartJsCanvas: React.FC<ChartJsCanvasProps> = ({ name, datapoint }) => {
-  const chartRef = useRef<HTMLCanvasElement>(null)
-  const chartInstanceRef = useRef<Chart>()
+  const chartRef = useRef<HTMLCanvasElement>(null);
+  const chartInstanceRef = useRef<Chart>();
 
   useEffect(() => {
     if (chartRef.current) {
@@ -39,7 +39,7 @@ const ChartJsCanvas: React.FC<ChartJsCanvasProps> = ({ name, datapoint }) => {
             fill: false,
           },
         ],
-      }
+      };
       const chartOptions: ChartOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -59,71 +59,77 @@ const ChartJsCanvas: React.FC<ChartJsCanvasProps> = ({ name, datapoint }) => {
           },
           y: {},
         },
-      }
+      };
       chartInstanceRef.current = new Chart(chartRef.current, {
         type: "line",
         data: chartData,
         options: chartOptions,
-      })
+      });
     }
     return () => {
-      chartInstanceRef.current?.destroy()
-    }
-  }, [name])
+      chartInstanceRef.current?.destroy();
+    };
+  }, [name]);
 
   useEffect(() => {
     if (chartInstanceRef.current) {
       if (datapoint) {
         // add label X a
-        chartInstanceRef.current.data?.labels?.push(datapoint.Time)
+        chartInstanceRef.current.data?.labels?.push(datapoint.Time);
         // add data y
-        chartInstanceRef.current.data.datasets[0].data.push(datapoint.Value)
+        chartInstanceRef.current.data.datasets[0].data.push(datapoint.Value);
       }
     }
-  }, [datapoint])
+  }, [datapoint]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      chartInstanceRef?.current?.update()
-    }, 200)
+      chartInstanceRef?.current?.update();
+    }, 200);
 
-    return () => clearInterval(intervalId)
-  }, [])
+    return () => clearInterval(intervalId);
+  }, []);
 
-  return <canvas ref={chartRef}></canvas>
-}
+  return <canvas ref={chartRef}></canvas>;
+};
 
 interface JsChartProps {
-  URL: string
+  URL: string;
 }
 
 const ChartContainer: React.FC<JsChartProps> = ({ URL }) => {
-  const [pdata, setpData] = useState<IDataPoint>()
-  const [tdata, settData] = useState<IDataPoint>()
+  const [pdata, setpData] = useState<IDataPoint>();
+  const [tdata, settData] = useState<IDataPoint>();
 
   useEffect(() => {
-    const socket = new WebSocket(URL)
+    const socket = new WebSocket(URL);
 
     socket.addEventListener("message", (event) => {
-      const newDataPoint: IData = JSON.parse(event.data)
+      const newDataPoint: IData = JSON.parse(event.data);
       if (newDataPoint.Sensor === "Pressure1") {
-        setpData({ Time: newDataPoint.Ts / 1000000, Value: newDataPoint.Value })
+        setpData({
+          Time: newDataPoint.Ts / 1000000,
+          Value: newDataPoint.Value,
+        });
       } else if (newDataPoint.Sensor === "Temperature1") {
-        settData({ Time: newDataPoint.Ts / 1000000, Value: newDataPoint.Value })
+        settData({
+          Time: newDataPoint.Ts / 1000000,
+          Value: newDataPoint.Value,
+        });
       } else {
-        console.log("Unknown sensor")
+        console.log("Unknown sensor");
       }
-    })
+    });
 
     return () => {
       // Close the WebSocket connection when the component unmounts
       // Make sure the connection is only closed if it's ready
       if (socket.readyState === 1) {
-        console.log("Closing socket")
-        socket.close()
+        console.log("Closing socket");
+        socket.close();
       }
-    }
-  }, [URL])
+    };
+  }, [URL]);
 
   return (
     <div className="ChartsContainer">
@@ -134,7 +140,7 @@ const ChartContainer: React.FC<JsChartProps> = ({ URL }) => {
         <ChartJsCanvas name={"Pressure"} datapoint={pdata} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ChartContainer
+export default ChartContainer;
