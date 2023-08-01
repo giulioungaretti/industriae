@@ -45,7 +45,15 @@ Rarely should we trust higher level systems to deal with hardware/safety limits.
 
 ### API Design
 
-Design the APIs that would be used for communication between the UI, the embedded system, and the logging system.
+The API is designed to be simple and easy to use. The API is designed to be async and non blocking and based on REST principles, for live data a websocked connection is used. GOLANG is used becaue it's simple and fast, and it's a good fit for this kind of system. Can run in a cheap enbedded system, and it's easy to deploy and scale. 
+The API should be documented with openAPI or similar, but due to time constraints this was not implemented.
+The endpoints are:
+-  /start a simple GET request to start the control loop, returns a simple status
+-  /stop a simple GET request to start the control loop, returns a simple status
+-  /temperature a get request to set the current temperature, the setpoint value shuld be passed as a query param, returns a simple status with the current value
+-  /pressure a get request to set the current pressure, the setpoint value shuld be passed as a query param, returns a simple status with the current value
+- /ws is the live websocket connection to the data stream, the data is sent as a json object with the current values of the sensors
+
 
 ### Error Handling
 
