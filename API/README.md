@@ -14,8 +14,9 @@ Install the recommended extensions.
 
 ###  DEV 
 Reopen the repository in a dev container by clicking the "Reopen in Container" button in the bottom right corner of the window.
-Run the project by opening a terminal and running go run main.go.
-Test the project by opening a terminal and running go test ./...
+Debug the api with the "Launch API" debug configuration, aka F5 after opening main.go
+Run the project by opening a terminal and running ` go run main.go `. VSCode will take care of forwading the port for you.
+Test the project by opening a terminal and running ` go test ./... `.
 
 ### Build
 Use the included docker file to build the API server.
