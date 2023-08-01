@@ -1,0 +1,16 @@
+{
+	"[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+            "source.fixAll.eslint": true
+        }
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true,
+            "source.fixAll.eslint": true
+        }
+    }
+}
