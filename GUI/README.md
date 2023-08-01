@@ -1,10 +1,21 @@
-## dev-req
+# GUI
+This is a React/Typescript project that uses a dev container for development.
 
-Node and npm are needed to proceed.
+### Prerequisites
+Docker
+Visual Studio Code
+Remote - Containers extension
 
-## Scripts
+## Getting Started -- DEV 
+Clone this repository and navigate to the GUI folder. AKA this folder.
+Open the Folder in Visual Studio Code.
+Install the recommended extensions.
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
+###  DEV 
+Reopen the repository in a dev container by clicking the "Reopen in Container" button in the bottom right corner of the window.
+Debug the gui by pressing F5 and it will build, start the hot reload and open the browser.
+Run the project by opening a terminal and running any of the npm scripts.
+
+### Build
+Builing this proejct requries running  the build script. 
+In the real world the bundled/minifed artifact would then either served by the main server or from some CDN.

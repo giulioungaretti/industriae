@@ -1,39 +1,172 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
 .App {
-  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
+.header {
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  background-color: lightgray;
 }
 
-.App-header {
-  min-height: 100vh;
+.buttons {
+  flex: 1;
+  background-color: lightgray;
+}
+
+.footer {
+  height: 30px;
+  background-color: gray;
+}
+
+.mainContent{
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
 }
 
-.App-link {
-  color: rgb(112, 76, 182);
+.ChartsContainer{
+  display: flex ;
+  width: 100%;
+  flex:auto;
+  flex-direction: column;
+  justify-content: center;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.chart {
+  flex: 1;
+  margin: 10px;
+  padding: 10px;
+}
+
+
+button {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  margin: 0.5rem;
+}
+
+button:hover {
+  background-color: #f2f2f2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+button:active {
+  background-color: #e6e6e6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+}
+button:disabled {
+  background-color: #ccc;
+  color: #999;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.input-box{
+  display: flex;
+  flex-direction: row;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form input[type="text"],
+.form input[type="number"],
+.form textarea {
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #f2f2f2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  margin: 0.5rem;
+  width: 100%;
+}
+input[type="number"] {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  margin: 0.5rem;
+}
+
+.form input[type="text"]:focus,
+.form input[type="number"]:focus,
+.form textarea:focus {
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.form input[type="submit"] {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  margin: 0.5rem;
+}
+
+.form input[type="submit"]:hover {
+  background-color: #f2f2f2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.form input[type="submit"]:active {
+  background-color: #e6e6e6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+}
+
+.form input[type="submit"]:disabled {
+  background-color: #ccc;
+  color: #999;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+button:disabled {
+  background-color: #ccc;
+  color: #999;
+  box-shadow: none;
+  cursor: not-allowed;
 }

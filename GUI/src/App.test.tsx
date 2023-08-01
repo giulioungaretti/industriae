@@ -1,14 +1,10 @@
-import { render } from "@testing-library/react"
-import { Provider } from "react-redux"
-import { store } from "./app/store"
+import { test } from "@jest/globals"
+import { render, screen } from "@testing-library/react"
 import App from "./App"
 
 test("renders learn react link", () => {
-  const { getByText } = render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
-  )
+  // RENDER APP
+  render(<App />)
 
-  expect(getByText(/learn/i)).toBeInTheDocument()
+  expect(screen.getByText(/Pressure/i)).toBeInTheDocument()
 })
