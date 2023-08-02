@@ -51,8 +51,8 @@ func main() {
 	backgroundCtx := context.Background()
 
 	// set up sensors
-	pressureSensor := sensor.Create("Pressure1", 10)
-	temperatureSensor := sensor.Create("Temperature1", 100)
+	pressureSensor := sensor.Create("Pressure1", 10, 1000)
+	temperatureSensor := sensor.Create("Temperature1", 10, 100)
 	sensors := []sensor.Sensor{pressureSensor, temperatureSensor}
 	dataStreamCh := make(chan sensor.SensorValues)
 
