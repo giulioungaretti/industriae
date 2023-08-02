@@ -6,13 +6,24 @@ import (
 	"time"
 )
 
+type SensorError string
+
+// Error returns the error message
+func (e SensorError) Error() string {
+	return string(e)
+}
+
+// ErrSetPointTooHigh is returned when the setpoint is higher than the limit
+var ErrSetPointTooHigh = SensorError("setpoint too high")
+
 type SensorValues struct {
 	sensor     string
 	setPoint   int
+	limit      int
 	setPointTs int64
 	value      int
 	ts         int64
-	error      error
+	error      SensorError
 }
 
 // Timestamp is the timestamp of the last sensor read
@@ -45,6 +56,11 @@ func (s SensorValues) Error() error {
 	return s.error
 }
 
+// Limit is the maximum value of the sensor
+func (s SensorValues) Limit() int {
+	return s.limit
+}
+
 // String returns the sensor values as a string array
 func (s SensorValues) String() []string {
 	error := "null"
@@ -74,6 +90,9 @@ func (s *Sensor) run() {
 	for {
 		select {
 		case spm := <-s.ControlCh:
+			if spm > s.limit {
+				s.error = ErrSetPointTooHigh
+			}
 			s.SensorValues.setPointTs = time.Now().UnixNano()
 			s.SensorValues.setPoint = spm
 		case <-time.After(time.Duration(s.scanRate) * time.Millisecond):
@@ -111,10 +130,10 @@ func (s *Sensor) run() {
 
 // Create a new sensor with the given name
 // starts the sensor loop in a goroutine with the given scan rate in microseconds
-func Create(name string, scanRate int) Sensor {
+func Create(name string, scanRate int, limit int) Sensor {
 	s := Sensor{
 		// TODO: set the initial value to the current value of the sensor setting to 0 might be dangerous default
-		SensorValues: SensorValues{sensor: name, setPoint: 0, value: 0, ts: time.Now().UnixNano()},
+		SensorValues: SensorValues{sensor: name, setPoint: 0, value: 0, ts: time.Now().UnixNano(), limit: limit},
 		// always buffer for two values, so that the sensor can be read while the control loop is running
 		ReadCh: make(chan SensorValues, 2),
 		// always buffer for one incoming command
