@@ -98,22 +98,27 @@ func main() {
 	})
 
 	r.HandleFunc("/temperature", func(w http.ResponseWriter, r *http.Request) {
+		if status == "stopped" {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "control loop is not running, please start it first"})
+		}
+		// set value
 		tempStr := r.URL.Query().Get("value")
 		if tempStr != "" {
 			v, err := strconv.Atoi(tempStr)
 			if err == nil {
 				select {
 				case temperatureSensor.ControlCh <- int(v):
-					log.Debug().Msgf("setting temperature to %d", v)
-					json.NewEncoder(w).Encode(map[string]int{"temperature": temperatureSensor.Value()})
+					// block for the answer
+					sv := <-temperatureSensor.ReadCh
+					if sv.Error() != nil {
+						json.NewEncoder(w).Encode(map[string]string{"error": sv.Error().Error()})
+					}
+					json.NewEncoder(w).Encode(map[string]int{"ok": temperatureSensor.Value()})
 					return
 				default:
 					w.WriteHeader(http.StatusBadRequest)
-					if status == "stopped" {
-						json.NewEncoder(w).Encode(map[string]string{"message": "control loop is not running, please start it first"})
-					} else {
-						json.NewEncoder(w).Encode(map[string]string{"message": "control loop is not accepting commands, please try again later"})
-					}
+					json.NewEncoder(w).Encode(map[string]string{"error": "control loop is not accepting commands, please try again later"})
 					return
 				}
 			}
@@ -121,6 +126,10 @@ func main() {
 	})
 
 	r.HandleFunc("/pressure", func(w http.ResponseWriter, r *http.Request) {
+		if status == "stopped" {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "control loop is not running, please start it first"})
+		}
 		pressureStr := r.URL.Query().Get("value")
 		if pressureStr != "" {
 			v, err := strconv.Atoi(pressureStr)
@@ -128,14 +137,15 @@ func main() {
 				select {
 				case pressureSensor.ControlCh <- int(v):
 					json.NewEncoder(w).Encode(map[string]float64{"pressure": rand.Float64()})
+					sv := <-pressureSensor.ReadCh
+					if sv.Error() != nil {
+						json.NewEncoder(w).Encode(map[string]string{"error": sv.Error().Error()})
+					}
+					json.NewEncoder(w).Encode(map[string]int{"ok": pressureSensor.Value()})
 					return
 				default:
 					w.WriteHeader(http.StatusBadRequest)
-					if status == "stopped" {
-						json.NewEncoder(w).Encode(map[string]string{"message": "control loop is not running, please start it first"})
-					} else {
-						json.NewEncoder(w).Encode(map[string]string{"message": "control loop is not accepting commands, please try again later"})
-					}
+					json.NewEncoder(w).Encode(map[string]string{"error": "control loop is not accepting commands, please try again later"})
 					return
 				}
 			}
