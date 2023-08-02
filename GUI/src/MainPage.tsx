@@ -1,7 +1,7 @@
 // import PageOne from "./PageOne"
 import { useState } from "react";
+import APIinput from "./components/APIinput";
 import APIButton from "./components/APiButton";
-import APIinput from "./components/ApiInput";
 import ChartContainerZ from "./components/Chart";
 
 const url = "http://localhost:8080";
