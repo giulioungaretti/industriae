@@ -19,16 +19,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// This is imaginary inmemory  sensor
-// reading the values as if it was read from a physical sensor
-// the sensor is simulated not to have random failures on read
-
-// setting the values as if it was set on a physical sensor
-// the sensor is simulated  to have random failures on set
-// a minimal saftey check to make sure the value is not too high
-// NOTE: this really should be in the PLC/RTOS control wrapping memory mapped IO to the sensor
-// and/or in the control itself and error code should be returned to the control
-
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
