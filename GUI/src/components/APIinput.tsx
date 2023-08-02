@@ -1,5 +1,19 @@
 import React, { useState } from "react";
 
+class Error {
+  error!: string;
+}
+
+class Ok {
+  ok!: string;
+}
+
+type Resp = Ok | Error;
+
+function IsError(r: Resp): r is Error {
+  return (r as Error).error !== undefined;
+}
+
 const APIinput = (p: { url: string; endpoint: string; disabled: boolean }) => {
   const [value, setValue] = useState("");
   const [, setResult] = useState("");
@@ -9,8 +23,14 @@ const APIinput = (p: { url: string; endpoint: string; disabled: boolean }) => {
     const response = await fetch(`${p.url}/${p.endpoint}?value=${value}`, {
       method: "POST",
     });
-    const data = await response.json();
-    setResult(data);
+    const output = (await response.json()) as Resp;
+    // let output = JSON.parse(data) as Resp;
+    if (IsError(output)) {
+      console.log(output.error);
+    } else {
+      console.log(output);
+      setResult(output.ok);
+    }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
