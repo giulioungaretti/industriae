@@ -58,3 +58,31 @@ func TestSensor_Error(t *testing.T) {
 		t.Errorf("unexpected value: %v", value)
 	}
 }
+
+func TestSensor_Error_Reset(t *testing.T) {
+	// create mock control and read channels
+	// set the scan rate to 1 irco seconds
+	// this is a cheat to predict the value of the sensor
+	// as it will take one tick
+	scanTime := 1
+	setpoint := 10
+	setPointLimit := 1
+	s := sensor.Create("test", scanTime, setPointLimit)
+	// set setpoint to much higher value
+	s.ControlCh <- setpoint
+	expected := <-s.ReadCh
+	if expected.SetPoint() == setpoint {
+		t.Errorf("unexpected setpoint: %v should have not ben set over the limit", expected.SetPoint())
+	}
+	if expected.Error() == nil {
+		t.Errorf("Expected error")
+	}
+	s.ControlCh <- setPointLimit
+	expected = <-s.ReadCh
+	if expected.SetPoint() != setPointLimit {
+		t.Errorf("unexpected setpoint: %v should have not ben set over the limit", expected.SetPoint())
+	}
+	if expected.Error() != nil {
+		t.Errorf("Expected error to be reset")
+	}
+}
