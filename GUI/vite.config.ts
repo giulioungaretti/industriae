@@ -5,7 +5,14 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: "0.0.0.0",
+    hmr: {
+      clientPort: 5173,
+    },
     open: false,
+    watch: {
+      usePolling: true,
+    },
   },
   build: {
     outDir: "build",
