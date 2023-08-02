@@ -113,6 +113,7 @@ func main() {
 					sv := <-temperatureSensor.ReadCh
 					if sv.Error() != nil {
 						json.NewEncoder(w).Encode(map[string]string{"error": sv.Error().Error()})
+						return
 					}
 					json.NewEncoder(w).Encode(map[string]int{"ok": temperatureSensor.Value()})
 					return
@@ -140,6 +141,7 @@ func main() {
 					sv := <-pressureSensor.ReadCh
 					if sv.Error() != nil {
 						json.NewEncoder(w).Encode(map[string]string{"error": sv.Error().Error()})
+						return
 					}
 					json.NewEncoder(w).Encode(map[string]int{"ok": pressureSensor.Value()})
 					return
