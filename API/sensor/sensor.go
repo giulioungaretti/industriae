@@ -19,7 +19,6 @@ var ErrSetPointTooHigh = SensorError("setpoint too high")
 type SensorValues struct {
 	sensor     string
 	setPoint   int
-	limit      int
 	setPointTs int64
 	value      int
 	ts         int64
@@ -56,11 +55,6 @@ func (s SensorValues) Error() error {
 	return s.error
 }
 
-// Limit is the maximum value of the sensor
-func (s SensorValues) Limit() int {
-	return s.limit
-}
-
 // String returns the sensor values as a string array
 func (s SensorValues) String() []string {
 	error := "null"
@@ -84,6 +78,13 @@ type Sensor struct {
 	ControlCh chan int
 	// scanRate is the rate at which the sensor is read in milliseconds
 	scanRate int
+	// limit is the maximum value of the sensor
+	limit int
+}
+
+// Limit is the maximum value of the sensor
+func (s Sensor) Limit() int {
+	return s.limit
 }
 
 func (s *Sensor) run() {
@@ -92,9 +93,12 @@ func (s *Sensor) run() {
 		case spm := <-s.ControlCh:
 			if spm > s.limit {
 				s.error = ErrSetPointTooHigh
+				s.SensorValues.ts = time.Now().UnixNano()
+				s.ReadCh <- s.SensorValues
+			} else {
+				s.SensorValues.setPointTs = time.Now().UnixNano()
+				s.SensorValues.setPoint = spm
 			}
-			s.SensorValues.setPointTs = time.Now().UnixNano()
-			s.SensorValues.setPoint = spm
 		case <-time.After(time.Duration(s.scanRate) * time.Millisecond):
 			//	simulate a lag in the setpoint/set of the sensor
 			// the logic is silly beacuse it is just a simulation
@@ -133,12 +137,13 @@ func (s *Sensor) run() {
 func Create(name string, scanRate int, limit int) Sensor {
 	s := Sensor{
 		// TODO: set the initial value to the current value of the sensor setting to 0 might be dangerous default
-		SensorValues: SensorValues{sensor: name, setPoint: 0, value: 0, ts: time.Now().UnixNano(), limit: limit},
+		SensorValues: SensorValues{sensor: name, setPoint: 0, value: 0, ts: time.Now().UnixNano()},
 		// always buffer for two values, so that the sensor can be read while the control loop is running
 		ReadCh: make(chan SensorValues, 2),
 		// always buffer for one incoming command
 		ControlCh: make(chan int, 1),
 		scanRate:  scanRate,
+		limit:     limit,
 	}
 	go s.run()
 	return s
