@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
+// errorString is a trivial implementation of error.
 type SensorError string
 
-// Error returns the error message
 func (e SensorError) Error() string {
 	return string(e)
 }
@@ -22,7 +22,7 @@ type SensorValues struct {
 	setPointTs int64
 	value      int
 	ts         int64
-	error      SensorError
+	error      error
 }
 
 // Timestamp is the timestamp of the last sensor read
@@ -92,13 +92,14 @@ func (s *Sensor) run() {
 		select {
 		case spm := <-s.ControlCh:
 			if spm > s.limit {
-				s.error = ErrSetPointTooHigh
+				s.error = &ErrSetPointTooHigh
 				s.SensorValues.ts = time.Now().UnixNano()
-				s.ReadCh <- s.SensorValues
 			} else {
 				s.SensorValues.setPointTs = time.Now().UnixNano()
 				s.SensorValues.setPoint = spm
+				s.SensorValues.error = nil
 			}
+			s.ReadCh <- s.SensorValues
 		case <-time.After(time.Duration(s.scanRate) * time.Millisecond):
 			//	simulate a lag in the setpoint/set of the sensor
 			// the logic is silly beacuse it is just a simulation
