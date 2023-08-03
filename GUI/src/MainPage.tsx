@@ -3,6 +3,7 @@ import { useState } from "react";
 import APIinput from "./components/APIinput";
 import APIButton from "./components/APiButton";
 import ChartContainerZ from "./components/Chart";
+import StatusBar from "./components/Status";
 
 const url = "http://localhost:8080";
 const ws = "ws://localhost:8080/ws";
@@ -37,7 +38,7 @@ function Page() {
         {isStarted && <ChartContainerZ URL={ws} />}
       </div>
       <div className="footer">
-        {error && <div className="error">{error}</div>}
+        <StatusBar URL={ws} started={isStarted} />
       </div>
     </div>
   );

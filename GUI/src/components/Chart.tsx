@@ -1,21 +1,7 @@
 import Chart, { ChartOptions } from "chart.js/auto";
 import "chartjs-adapter-moment";
 import React, { useEffect, useRef, useState } from "react";
-
-interface IDataPoint {
-  Time: number;
-  Value: number;
-}
-
-interface IData {
-  Sensor: string;
-  SetPoint: number;
-  SetPointTs: number;
-  Value: number;
-  Ts: number;
-  Error: null;
-  TsSent: number;
-}
+import { IDataPoint } from "./types";
 
 interface ChartJsCanvasProps {
   name: string;

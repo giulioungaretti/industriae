@@ -29,22 +29,91 @@ body {
 }
 
 .footer {
-  height: 30px;
+  height: 35px;
   background-color: gray;
+  display: flex
 }
 
-.mainContent{
+.status-bar {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+}
+
+
+.sensor-status {
+  margin: 1px;
+  display: flex;
+  align-items: center;
+  padding: 0.3rem;
+  margin: 0.1rem;
+  border-radius: 0.5rem;
+  background-color: #f5f5f5;
+}
+
+.sensor-status__indicator {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.sensor-status__name {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.sensor-status__status {
+  font-size: 0.8rem;
+}
+
+.sensor-status__status--ok {
+  color: green;
+}
+
+.sensor-status__status--warning {
+  color: orange;
+}
+
+.sensor-status__status--error {
+  color: red;
+}
+
+.sensor-status__indicator--ok {
+  background-color: green;
+}
+
+.sensor-status__indicator--warning {
+  background-color: orange;
+}
+
+.sensor-status__indicator--error {
+  background-color: red;
+  animation: blinker 1s linear infinite;
+  }
+  
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.mainContent {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  justify-items: center;
 }
 
-.ChartsContainer{
-  display: flex ;
+.ChartsContainer {
+  display: flex;
   width: 100%;
-  flex:auto;
+  flex: auto;
   flex-direction: column;
   justify-content: center;
 }
@@ -80,6 +149,7 @@ button:active {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   transform: translateY(0);
 }
+
 button:disabled {
   background-color: #ccc;
   color: #999;
@@ -87,7 +157,8 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.input-box{
+
+.input-box {
   display: flex;
   flex-direction: row;
 }
@@ -111,6 +182,7 @@ button:disabled {
   margin: 0.5rem;
   width: 100%;
 }
+
 input[type="number"] {
   font-size: 1rem;
   font-weight: bold;
