@@ -51,8 +51,8 @@ func main() {
 	backgroundCtx := context.Background()
 
 	// set up sensors
-	pressureSensor := sensor.Create("Pressure1", 10, 1000)
-	temperatureSensor := sensor.Create("Temperature1", 10, 100)
+	pressureSensor := sensor.Create("Pressure1", 1, 1000)
+	temperatureSensor := sensor.Create("Temperature1", 1, 100)
 	sensors := []sensor.Sensor{pressureSensor, temperatureSensor}
 	dataStreamCh := make(chan sensor.SensorValues)
 
@@ -109,10 +109,9 @@ func main() {
 			if err == nil {
 				select {
 				case temperatureSensor.ControlCh <- int(v):
-					// block for the answer
-					sv := <-temperatureSensor.ReadCh
-					if sv.Error() != nil {
-						json.NewEncoder(w).Encode(map[string]string{"error": sv.Error().Error()})
+					err := <-temperatureSensor.ErrorCh
+					if err != nil {
+						json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 						return
 					}
 					json.NewEncoder(w).Encode(map[string]int{"ok": temperatureSensor.Value()})
@@ -138,9 +137,9 @@ func main() {
 				select {
 				case pressureSensor.ControlCh <- int(v):
 					json.NewEncoder(w).Encode(map[string]float64{"pressure": rand.Float64()})
-					sv := <-pressureSensor.ReadCh
-					if sv.Error() != nil {
-						json.NewEncoder(w).Encode(map[string]string{"error": sv.Error().Error()})
+					err := <-pressureSensor.ErrorCh
+					if err != nil {
+						json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 						return
 					}
 					json.NewEncoder(w).Encode(map[string]int{"ok": pressureSensor.Value()})
