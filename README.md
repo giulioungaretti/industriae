@@ -43,6 +43,8 @@ Every action is non blocking and async, and the system is designed to be fault t
 
 A simple UI allows users to start and stop the equipment, and set the setpoint of the temperaure and pressure sensors. The UI also displays the real-time data from the sensors.
 
+![GUI](./GUI.png)
+
 ### Data Logging
 
 Data logging is simple. The system should log all the data from the sensors. The data is stored in a simple flat file as csv data. This data can be used for further analysis and nothing is faster than an append only write to disk.
