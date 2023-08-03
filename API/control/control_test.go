@@ -22,8 +22,8 @@ func TestLoop(t *testing.T) {
 	dataCh := make(chan sensor.SensorValues)
 
 	// create two sensors with different set points
-	sensor1 := sensor.Create("sensor1", 1)
-	sensor2 := sensor.Create("sensor2", 1)
+	sensor1 := sensor.Create("sensor1", 1, 100)
+	sensor2 := sensor.Create("sensor2", 1, 100)
 	sensor1SP := 50
 	sensor2SP := 100
 	sensor1.ControlCh <- sensor1SP
@@ -75,8 +75,8 @@ func TestLoopTimeout(t *testing.T) {
 	dataCh := make(chan sensor.SensorValues)
 
 	// create two sensors with different set points
-	sensor1 := sensor.Create("sensor1", 1)
-	sensor2 := sensor.Create("sensor2", 1)
+	sensor1 := sensor.Create("sensor1", 1, 100)
+	sensor2 := sensor.Create("sensor2", 1, 100)
 
 	// start the loop
 	go control.Loop(ctx, 10, dataCh, sensor1, sensor2)
@@ -117,7 +117,7 @@ func TestCsvLogger(t *testing.T) {
 
 	sp := 1
 	// send some data to the data channel
-	data := sensor.Create("sensor1", 50)
+	data := sensor.Create("sensor1", 50, 100)
 	data.ControlCh <- sp
 	randomEmptyValue := <-data.ReadCh
 
@@ -181,7 +181,7 @@ func TestMultiplexWithPriority(t *testing.T) {
 	control.MultiplexWithPriority(ctx, dataCh, consumer1, consumer2)
 
 	// send some data to the data channel
-	data := sensor.Create("sensor1", 50)
+	data := sensor.Create("sensor1", 50, 100)
 	randomEmptyValue := <-data.ReadCh
 
 	dataCh <- randomEmptyValue
