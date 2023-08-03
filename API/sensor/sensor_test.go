@@ -47,7 +47,8 @@ func TestSensor_Error(t *testing.T) {
 	if expected.SetPoint() == setpoint {
 		t.Errorf("unexpected setpoint: %v should have not ben set over the limit", expected.SetPoint())
 	}
-	if expected.Error() == nil {
+	err := <-s.ErrorCh
+	if err == nil {
 		t.Errorf("Expected error")
 	}
 	// wait for the sensor to read the value
@@ -74,7 +75,8 @@ func TestSensor_Error_Reset(t *testing.T) {
 	if expected.SetPoint() == setpoint {
 		t.Errorf("unexpected setpoint: %v should have not ben set over the limit", expected.SetPoint())
 	}
-	if expected.Error() == nil {
+	err := <-s.ErrorCh
+	if err == nil {
 		t.Errorf("Expected error")
 	}
 	s.ControlCh <- setPointLimit
@@ -82,7 +84,8 @@ func TestSensor_Error_Reset(t *testing.T) {
 	if expected.SetPoint() != setPointLimit {
 		t.Errorf("unexpected setpoint: %v should have not ben set over the limit", expected.SetPoint())
 	}
-	if expected.Error() != nil {
+	err = <-s.ErrorCh
+	if err != nil {
 		t.Errorf("Expected error to be reset")
 	}
 }

@@ -58,9 +58,9 @@ func (s SensorValues) Error() error {
 // String returns the sensor values as a string array
 func (s SensorValues) String() []string {
 	error := "null"
-	// if s.erorr != nil {
-	// error = s.erorr.Error()
-	// }
+	if s.error != nil {
+		error = s.error.Error()
+	}
 	return []string{
 		s.sensor,
 		strconv.FormatInt(s.setPointTs, 10),
@@ -72,6 +72,8 @@ func (s SensorValues) String() []string {
 
 type Sensor struct {
 	SensorValues
+	// readCh is used to read the sensor values
+	ErrorCh chan error
 	// readCh is used to read the sensor values
 	ReadCh chan SensorValues
 	// controlCh is used to set the setpoint of the sensor
@@ -92,14 +94,15 @@ func (s *Sensor) run() {
 		select {
 		case spm := <-s.ControlCh:
 			if spm > s.limit {
-				s.error = &ErrSetPointTooHigh
+				s.ErrorCh <- ErrSetPointTooHigh
+				s.error = ErrSetPointTooHigh
 				s.SensorValues.ts = time.Now().UnixNano()
 			} else {
 				s.SensorValues.setPointTs = time.Now().UnixNano()
 				s.SensorValues.setPoint = spm
-				s.SensorValues.error = nil
+				s.error = nil
+				s.ErrorCh <- nil
 			}
-			s.ReadCh <- s.SensorValues
 		case <-time.After(time.Duration(s.scanRate) * time.Millisecond):
 			//	simulate a lag in the setpoint/set of the sensor
 			// the logic is silly beacuse it is just a simulation
@@ -143,8 +146,10 @@ func Create(name string, scanRate int, limit int) Sensor {
 		ReadCh: make(chan SensorValues, 2),
 		// always buffer for one incoming command
 		ControlCh: make(chan int, 1),
-		scanRate:  scanRate,
-		limit:     limit,
+		// always buffer for one error
+		ErrorCh:  make(chan error, 1),
+		scanRate: scanRate,
+		limit:    limit,
 	}
 	go s.run()
 	return s
